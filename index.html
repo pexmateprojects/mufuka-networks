@@ -54,6 +54,8 @@ input {
     border: none;
     margin-bottom: 15px;
     outline: none;
+    text-align: center;
+    font-size: 16px;
 }
 
 button {
@@ -65,6 +67,7 @@ button {
     color: black;
     font-weight: 700;
     cursor: pointer;
+    font-size: 16px;
 }
 
 button:hover {
@@ -102,9 +105,9 @@ button:hover {
     font-weight: 600;
 }
 
-.error {
-    color: #ff6b6b;
-    font-size: 12px;
+.success {
+    color: #9cff57;
+    font-size: 14px;
     margin-bottom: 10px;
     display: none;
 }
@@ -118,10 +121,10 @@ button:hover {
     <div class="title">Mufuka Internet</div>
     <div class="subtitle">Fast. Reliable. Connected.</div>
 
-    <div class="error" id="errorMsg">Connection error. Please try again.</div>
+    <div class="success" id="successMsg">Connecting you now...</div>
 
     <form id="loginForm">
-        <input type="text" name="voucher" id="voucher" placeholder="Enter Voucher Code" required>
+        <input type="text" name="voucher" id="voucher" placeholder="Enter Voucher Code" required value="mv6x4q">
         <button type="submit">CONNECT</button>
     </form>
 
@@ -144,37 +147,24 @@ button:hover {
 </div>
 
 <script>
-// WiFiDog Integration for Ruijie/Reyee
-function getParam(name) {
-    var results = new RegExp('[?&]' + name + '=([^&#]*)').exec(window.location.href);
-    return results? decodeURIComponent(results[1]) : '';
-}
-
-var gw_address = getParam('gw_address');
-var gw_port = getParam('gw_port');
-var token = getParam('token');
-
-// Show error if Ruijie params missing
-if (!gw_address ||!token) {
-    document.getElementById('errorMsg').style.display = 'block';
-    document.getElementById('errorMsg').innerText = 'Please connect to Mufuka WiFi first';
-}
-
+// WISPr Mode for Ruijie - No WiFiDog tokens needed
 document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
-    var voucher = document.getElementById('voucher').value;
+    var voucher = document.getElementById('voucher').value.trim();
     
-    if (!gw_address ||!token) {
-        alert('Please connect to Mufuka WiFi first');
+    if (!voucher) {
+        alert('Please enter a voucher code');
         return;
     }
     
-    // WiFiDog auth URL format
-    var authUrl = 'http://' + gw_address + ':' + (gw_port || '2060') + '/wifidog/auth?token=' + token + '&voucher=' + encodeURIComponent(voucher);
+    document.getElementById('successMsg').style.display = 'block';
     
-    // Redirect to authenticate
-    window.location.href = authUrl;
+    // WISPr auth: Hit Ruijie gateway to grant internet
+    // This URL tells Ruijie "voucher accepted, let user online"
+    setTimeout(function() {
+        window.location.href = "http://1.1.1.1/login?username=" + encodeURIComponent(voucher) + "&password=" + encodeURIComponent(voucher);
+    }, 500);
 });
 </script>
 
