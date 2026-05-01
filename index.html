@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mufuka Internet Portal</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #0b1a0b, #1f3a1f, #2f4f2f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.card {
+    background: rgba(0,0,0,0.8);
+    padding: 32px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 30px rgba(0,255,0,0.15);
+    text-align: center;
+    border: 1px solid rgba(124,252,0,0.2);
+}
+
+.title {
+    font-size: 24px;
+    color: #9cff57;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 13px;
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 15px;
+    outline: none;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #7CFC00;
+    color: black;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #66cc00;
+}
+
+.whatsapp a {
+    display: block;
+    margin-top: 15px;
+    padding: 10px;
+    background: #25D366;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.services {
+    margin-top: 18px;
+    font-size: 12px;
+    color: #ddd;
+    line-height: 1.6;
+}
+
+.footer {
+    margin-top: 18px;
+    font-size: 11px;
+    color: #aaa;
+}
+
+.contact {
+    margin-top: 6px;
+    color: #9cff57;
+    font-weight: 600;
+}
+
+.error {
+    color: #ff6b6b;
+    font-size: 12px;
+    margin-bottom: 10px;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="title">Mufuka Internet</div>
+    <div class="subtitle">Fast. Reliable. Connected.</div>
+
+    <div class="error" id="errorMsg">Connection error. Please try again.</div>
+
+    <form id="loginForm">
+        <input type="text" name="voucher" id="voucher" placeholder="Enter Voucher Code" required>
+        <button type="submit">CONNECT</button>
+    </form>
+
+    <div class="whatsapp">
+        <a href="https://wa.me/263783464716" target="_blank">
+            💬 Contact Pexmate Group on WhatsApp
+        </a>
+    </div>
+
+    <div class="services">
+        <strong>Pexmate Group (Pvt) Ltd</strong><br><br>
+        CCTV • Alarms • Gate Motors • Intercoms • Electric Fence • Access Control Systems • WiFi & Networking Solutions
+    </div>
+
+    <div class="footer">
+        Designed & Maintained by Pexmate Group
+        <div class="contact">📞 0783464716</div>
+    </div>
+
+</div>
+
+<script>
+// WiFiDog Integration for Ruijie/Reyee
+function getParam(name) {
+    var results = new RegExp('[?&]' + name + '=([^&#]*)').exec(window.location.href);
+    return results? decodeURIComponent(results[1]) : '';
+}
+
+var gw_address = getParam('gw_address');
+var gw_port = getParam('gw_port');
+var token = getParam('token');
+
+// Show error if Ruijie params missing
+if (!gw_address ||!token) {
+    document.getElementById('errorMsg').style.display = 'block';
+    document.getElementById('errorMsg').innerText = 'Please connect to Mufuka WiFi first';
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var voucher = document.getElementById('voucher').value;
+    
+    if (!gw_address ||!token) {
+        alert('Please connect to Mufuka WiFi first');
+        return;
+    }
+    
+    // WiFiDog auth URL format
+    var authUrl = 'http://' + gw_address + ':' + (gw_port || '2060') + '/wifidog/auth?token=' + token + '&voucher=' + encodeURIComponent(voucher);
+    
+    // Redirect to authenticate
+    window.location.href = authUrl;
+});
+</script>
+
+</body>
+</html>
